@@ -23,10 +23,9 @@ void KeyDownEvent( WPARAM wParam )
 	else if (wParam == VK_RETURN){
 		cout << "Enter Down" << endl;
 	}
-
 	//==== 英文字母或數字 ====//
 	else{
-		cout << /*(char)*/wParam << " Down" << endl;
+		cout << (char)wParam << " Down" << endl;
 	}
 }
 
