@@ -1,7 +1,7 @@
 #pragma once
 class Reversi{
 	private:
-		bool bBW; // B:true, W:false (Check whose turn now)
+		
 		bool bMode; // Check mode:true, Set Mode:false;
 		char mArry[64];
 		
@@ -23,7 +23,7 @@ class Reversi{
 		- - - - - - - - -
 		X 0 1 2 3 4 5 6 7
 		//////////////////////////////////////////////////*/
-
+		bool bBW; // B:true, W:false (Check whose turn now)
 		void init();	//Initializing the game(include restart)
 		bool isEnd();	//Check if game is end 
 		bool isBW();	//Check whose turn now
@@ -31,6 +31,7 @@ class Reversi{
 		void setBW(int x, int y);	//Set chess on the board
 		int getBW(int x, int y);	//Get chess from the board
 		bool moveAnalyze(int x, int y); //Analyzes the move
+		int chkBoard[8][8];
 		
 		////Function usage(in order):
 		//1.Game start: init()

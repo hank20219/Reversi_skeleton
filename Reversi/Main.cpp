@@ -29,23 +29,35 @@ void clear() {
 }
 void DrawBoard() {
 	string drawnBoard = "";
-	
+	int countBlack = 0, countWhite = 0;
 	clear();
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			if (cursor[0] == j && cursor[1] == i) {
 				drawnBoard += "㊣";
+				if (reversi->getBW(j, i) == 2) {
+					countWhite++;
+				}else if (reversi->getBW(j, i) == 1) {
+					countBlack++;
+				}
 			}
 			else {
 				switch (reversi->getBW(j, i)) {
 				case 2:
 					drawnBoard += "●";
+					countWhite++;
 					break;
 				case 1:
 					drawnBoard += "○";
+					countBlack++;
 					break;
 				default:
-					drawnBoard += "—";
+					if (reversi->chkBoard[j][i] == 1) {
+						drawnBoard += "．";
+					}else{ 
+						drawnBoard += "—"; 
+					}
+					
 					break;
 				}
 			}
@@ -57,7 +69,8 @@ void DrawBoard() {
 		if (reversi->isBW()) { cout << "Now: ○" << endl; }
 		else { cout << "Now: ●" << endl; }
 	}
-	cout << cursor[0] << cursor[1] << ":" << reversi->getBW(cursor[0], cursor[1]) <<endl;
+	else { reversi->bBW = !reversi->bBW; }
+	cout << "○ : " << countBlack << "● : " << countWhite << endl;
 }
 void KeyDownEvent( WPARAM wParam )
 {
@@ -69,10 +82,9 @@ void KeyDownEvent( WPARAM wParam )
 		cout << "Back Down" << endl;
 	}
 	else if (wParam == VK_RETURN){
-		if (!reversi->isPass()) {
-			if (reversi->moveAnalyze(cursor[0], cursor[1])) {
+		if (reversi->moveAnalyze(cursor[0], cursor[1])) {
 				reversi->setBW(cursor[0], cursor[1]);
-			}
+				reversi->bBW = !reversi->bBW;
 		}
 		cout << "Enter Down" << endl;
 	}
@@ -105,21 +117,7 @@ void KeyDownEvent( WPARAM wParam )
 
 void KeyUpEvent( WPARAM wParam )
 {
-	//==== Tab、Enter、Ctrl... ====//
-	if( wParam == VK_TAB )
-	{
-		cout << "Tab Up" << endl;
-	}
-	else if (wParam == VK_BACK){
-		cout << "Back Up" << endl;
-	}
-	else if (wParam == VK_RETURN){
-		cout << "Enter Up" << endl;
-	}
-	//==== 英文字母或數字 ====//
-	else{
-		cout << (char)wParam << " Up" << endl;
-	}
+	DrawBoard();
 }
 
 int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow )
@@ -195,7 +193,6 @@ LRESULT CALLBACK WindowProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam 
 		break;
 
 	case WM_KEYUP:
-		DrawBoard();
 		KeyUpEvent( wParam );
 		break;
 	}
