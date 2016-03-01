@@ -4,9 +4,14 @@ class Reversi{
 		bool bBW; // B:true, W:false (Check whose turn now)
 		bool bMode; // Check mode:true, Set Mode:false;
 		char mArry[64];
+		
+		
+	public:
+		enum {eEMPTY, eBLACK, eWHITE};
+		int numWhite, numBlack;	//Count point
 		int mBoard[8][8];
 		/*//////////////Board Form//////////////////////////
-		  1 2 3 4 5 6 7 8   Y
+		1 2 3 4 5 6 7 8   Y
 		A 0 0 0 0 0 0 0 0 | 0
 		B 0 0 0 0 0 0 0 0 | 1
 		C 0 0 0 0 0 0 0 0 | 2
@@ -15,14 +20,10 @@ class Reversi{
 		F 0 0 0 0 0 0 0 0 | 5
 		G 0 0 0 0 0 0 0 0 | 6
 		H 0 0 0 0 0 0 0 0 | 7
-		- - - - - - - - - 
+		- - - - - - - - -
 		X 0 1 2 3 4 5 6 7
 		//////////////////////////////////////////////////*/
-		
-	public:
-		enum {eEMPTY, eBLACK, eWHITE};
-		int numWhite, numBlack;	//Count point
-	
+
 		void init();	//Initializing the game(include restart)
 		bool isEnd();	//Check if game is end 
 		bool isBW();	//Check whose turn now
