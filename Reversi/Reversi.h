@@ -2,8 +2,7 @@
 class Reversi{
 	private:
 		
-		bool bMode; // Check mode:true, Set Mode:false;
-		char mArry[64];
+		//bool bMode; // Check mode:true, Set Mode:false;
 		
 		
 	public:
@@ -23,7 +22,12 @@ class Reversi{
 		- - - - - - - - -
 		X 0 1 2 3 4 5 6 7
 		//////////////////////////////////////////////////*/
+		int numRecord = 0; // The number of records
+		int curRecord = 0; // The index of current record
+		int stepRecord[64][8][8]; //Remeber All steps
+		char mArry[64];//Check whose turn in record
 		bool bBW; // B:true, W:false (Check whose turn now)
+		bool isPassed;  //Check if passed twice 
 		void init();	//Initializing the game(include restart)
 		bool isEnd();	//Check if game is end 
 		bool isBW();	//Check whose turn now
@@ -32,6 +36,8 @@ class Reversi{
 		int getBW(int x, int y);	//Get chess from the board
 		bool moveAnalyze(int x, int y); //Analyzes the move
 		int chkBoard[8][8];
+		void Undo(void);
+		void Redo(void);
 		
 		////Function usage(in order):
 		//1.Game start: init()

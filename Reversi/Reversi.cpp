@@ -2,18 +2,7 @@
 #include <iostream>
 Reversi::Reversi(void)
 {
-	for (int i = 0; i < 8; i++) { //intializing board
-		for (int j = 0; j < 8; j++) {
-			mBoard[j][i] = eEMPTY;
-			chkBoard[j][i] = 0;
-		}
-	}
-	mBoard[3][3] = eBLACK;
-	mBoard[4][4] = eBLACK;
-	mBoard[3][4] = eWHITE;
-	mBoard[4][3] = eWHITE;
-	bBW = true;
-	bMode = false;
+	init();
 }
 
 
@@ -22,7 +11,27 @@ Reversi::~Reversi(void)
 }
 
 void Reversi::init(void){
-	
+	for (int i = 0; i < 8; i++) { //intializing board
+		for (int j = 0; j < 8; j++) {
+			mBoard[j][i] = eEMPTY;
+			chkBoard[j][i] = 0;
+			stepRecord[0][j][i] = mBoard[j][i];
+		}
+		mArry[i] = eEMPTY;
+	}
+	mBoard[3][3] = eBLACK;
+	mBoard[4][4] = eBLACK;
+	mBoard[3][4] = eWHITE;
+	mBoard[4][3] = eWHITE;
+	stepRecord[0][3][3] = mBoard[3][3];
+	stepRecord[0][4][4] = mBoard[4][4];
+	stepRecord[0][3][4] = mBoard[3][4];
+	stepRecord[0][4][3] = mBoard[4][3];
+	mArry[0] = eWHITE;
+	numRecord = 1;
+	curRecord = 1;
+	bBW = true;
+	isPassed = false;
 }
 
 bool Reversi::isBW(void){
@@ -30,27 +39,25 @@ bool Reversi::isBW(void){
 }
 
 bool Reversi::isEnd(void){
-	int countSlots = 0;
-	for (int i = 0; i < 8; i++){
-		for (int j = 0; j < 8; j++){
-			if (mBoard[j][i] == eEMPTY){ countSlots++; }
-		}
-	}
-	if (countSlots == 0){ return true; }
-	else { return false; }
+
+	return true;
 }
 
 bool Reversi::isPass(){
 	bool bPass = true;
 	for (int i = 0; i < 8; i++){
 		for (int j = 0; j < 8; j++){
-			chkBoard[j][i] = 0;
-			if (moveAnalyze(j, i)){
-				bPass = false;
-				chkBoard[j][i] = 1;
+			if(mBoard[j][i]==eEMPTY){
+				chkBoard[j][i] = 0;
+				if (moveAnalyze(j, i)){
+					bPass = false;
+					isPassed = false;
+					chkBoard[j][i] = 1;
+				}
 			}
 		}
 	}
+	isPassed = true;
 	return bPass;
 }
 
@@ -73,7 +80,7 @@ void Reversi::setBW(int x, int y){
 		while (mBoard[y - i][x] == iEnemy && y - i >= 0) {
 			i++;
 		}
-		if (i != 0 && mBoard[y - i][x] == myColor) {
+		if (i > 1 && mBoard[y - i][x] == myColor) {
 			for (int j = 0; j < i; j++) {
 				mBoard[y - j][x] = myColor;
 			}
@@ -85,7 +92,7 @@ void Reversi::setBW(int x, int y){
 		while (mBoard[y - i][x + i] == iEnemy && y - i >= 0 && x + i <= 7) {
 			i++;
 		}
-		if (i != 0 && mBoard[y - i][x + i] == myColor) {
+		if (i > 1 && mBoard[y - i][x + i] == myColor) {
 			for (int j = 0; j < i; j++) {
 				mBoard[y - j][x + j] = myColor;
 			}
@@ -97,7 +104,7 @@ void Reversi::setBW(int x, int y){
 		while (mBoard[y][x + i] == iEnemy && x + i <= 7) {
 			i++;
 		}
-		if (i != 0 && mBoard[y][x + i] == myColor) {
+		if (i > 1 && mBoard[y][x + i] == myColor) {
 			for (int j = 0; j < i; j++) {
 				mBoard[y][x + j] = myColor;
 			}
@@ -109,8 +116,7 @@ void Reversi::setBW(int x, int y){
 		while (mBoard[y + i][x + i] == iEnemy && y + i <= 7 && x + i <= 7) {
 			i++;
 		}
-		if (i != 0 && mBoard[y + i][x + i] == myColor) {
-			bMode = true;
+		if (i > 1 && mBoard[y + i][x + i] == myColor) {
 			for (int j = 0; j < i; j++) {
 				mBoard[y + j][x + j] = myColor;
 			}
@@ -122,7 +128,7 @@ void Reversi::setBW(int x, int y){
 		while (mBoard[y + i][x] == iEnemy && y + i <= 7) {
 			i++;
 		}
-		if (i != 0 && mBoard[y + i][x] == myColor) {
+		if (i > 1 && mBoard[y + i][x] == myColor) {
 			for (int j = 0; j < i; j++) {
 				mBoard[y + j][x] = myColor;
 			}
@@ -135,7 +141,7 @@ void Reversi::setBW(int x, int y){
 		while (mBoard[y + i][x - i] == iEnemy && y + i <= 7 && x - i >= 0) {
 			i++;
 		}
-		if (i != 0 && mBoard[y + i][x - i] == myColor) {
+		if (i > 1 && mBoard[y + i][x - i] == myColor) {
 			for (int j = 0; j < i; j++) {
 				mBoard[y + j][x - j] = myColor;
 			}
@@ -147,7 +153,7 @@ void Reversi::setBW(int x, int y){
 		while (mBoard[y][x - i] == iEnemy && x - i >= 0) {
 			i++;
 		}
-		if (i != 0 && mBoard[y][x - i] == myColor) {
+		if (i > 1 && mBoard[y][x - i] == myColor) {
 			for (int j = 0; j < i; j++) {
 				mBoard[y][x - j] = myColor;
 			}
@@ -159,13 +165,27 @@ void Reversi::setBW(int x, int y){
 		while (mBoard[y - i][x - i] == iEnemy && y - i >= 0 && x - i >= 0) {
 			i++;
 		}
-		if (i != 0 && mBoard[y - i][x - i] == myColor) {
+		if (i > 1 && mBoard[y - i][x - i] == myColor) {
 			for (int j = 0; j < i; j++) {
 				mBoard[y - j][x - j] = myColor;
 			}
 		}
 	}
-
+	//After all chess flipped, record the board
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			stepRecord[curRecord][j][i] = mBoard[j][i];
+		}
+	}
+	mArry[curRecord] = myColor;
+	if (numRecord == curRecord) {
+		numRecord++;
+		curRecord++;
+	}
+	else {
+		curRecord++;
+		numRecord = curRecord;
+	}
 }
 
 int Reversi::getBW(int x, int y){
@@ -186,7 +206,7 @@ bool Reversi::moveAnalyze(int x, int y){
 			while (mBoard[y-i][x] == iEnemy && y - i >= 0){
 				i++;
 			}
-			if (i != 0 && mBoard[y - i][x] == myColor){
+			if (i > 1 && mBoard[y - i][x] == myColor){
 				result = true; 
 			}
 	}
@@ -196,7 +216,7 @@ bool Reversi::moveAnalyze(int x, int y){
 			while (mBoard[y - i][x + i] == iEnemy && y - i >= 0 && x + i <= 7){
 				i++;
 			}
-			if (i != 0 && mBoard[y - i][x + i] == myColor){
+			if (i > 1 && mBoard[y - i][x + i] == myColor){
 				result = true; 
 			}
 	}
@@ -206,7 +226,7 @@ bool Reversi::moveAnalyze(int x, int y){
 			while (mBoard[y][x + i] == iEnemy && x + i <= 7){
 				i++;
 			}
-			if (i != 0 && mBoard[y][x + i] == myColor){
+			if (i > 1 && mBoard[y][x + i] == myColor){
 				result = true;
 			}
 	}
@@ -216,7 +236,7 @@ bool Reversi::moveAnalyze(int x, int y){
 			while (mBoard[y + i][x + i] == iEnemy && y + i <= 7 && x + i <= 7){
 				i++;
 			}
-			if (i != 0 && mBoard[y + i][x + i] == myColor){
+			if (i > 1 && mBoard[y + i][x + i] == myColor){
 				result = true; 
 			}
 	}
@@ -226,7 +246,7 @@ bool Reversi::moveAnalyze(int x, int y){
 			while (mBoard[y + i][x] == iEnemy && y + i <= 7){
 				i++;
 			}
-			if (i != 0 && mBoard[y + i][x] == myColor){
+			if (i > 1 && mBoard[y + i][x] == myColor){
 				result = true; 
 			}
 	}
@@ -236,7 +256,7 @@ bool Reversi::moveAnalyze(int x, int y){
 			while (mBoard[y + i][x - i] == iEnemy && y + i <= 7 && x - i >= 0){
 				i++;
 			}
-			if (i != 0 && mBoard[y + i][x - i] == myColor){
+			if (i > 1 && mBoard[y + i][x - i] == myColor){
 				result = true; 
 			}
 	}
@@ -246,7 +266,7 @@ bool Reversi::moveAnalyze(int x, int y){
 			while (mBoard[y][x - i] == iEnemy && x - i >= 0){
 				i++;
 			}
-			if (i != 0 && mBoard[y][x - i] == myColor){
+			if (i > 1 && mBoard[y][x - i] == myColor){
 				result = true; 
 			}
 	}
@@ -256,10 +276,47 @@ bool Reversi::moveAnalyze(int x, int y){
 			while (mBoard[y - i][x - i] == iEnemy && y - i >= 0 && x - i >= 0){
 				i++;
 			}
-			if (i != 0 && mBoard[y - i][x - i] == myColor){
+			if (i > 1 && mBoard[y - i][x - i] == myColor){
 				result = true; 
 			}
 	}
 	
 	return result;
+}
+
+void Reversi::Undo(void)
+{
+	if (curRecord > 1) {
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 8; j++) {
+				mBoard[j][i] = stepRecord[curRecord-2][j][i];
+			}
+		}
+		if (mArry[curRecord - 1] == 2) {
+			bBW = false;
+		}
+		else if (mArry[curRecord - 1] == 1) {
+			bBW = true;
+		}
+		curRecord--;
+	}
+}
+
+void Reversi::Redo(void)
+{
+
+	if (curRecord < numRecord) {
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 8; j++) {
+				mBoard[j][i] = stepRecord[curRecord][j][i];
+			}
+		}
+		if (mArry[curRecord-1] == 2) {
+			bBW = false;
+		}
+		else if (mArry[curRecord-1] == 1) {
+			bBW = true;
+		}
+		curRecord++;
+	}
 }

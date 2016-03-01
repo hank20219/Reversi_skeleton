@@ -29,6 +29,7 @@ void clear() {
 }
 void DrawBoard() {
 	string drawnBoard = "";
+	int countOK = 0;
 	int countBlack = 0, countWhite = 0;
 	clear();
 	for (int i = 0; i < 8; i++) {
@@ -54,6 +55,7 @@ void DrawBoard() {
 				default:
 					if (reversi->chkBoard[j][i] == 1) {
 						drawnBoard += "¡D";
+						countOK++;
 					}else{ 
 						drawnBoard += "¡X"; 
 					}
@@ -67,19 +69,40 @@ void DrawBoard() {
 	cout << drawnBoard << endl;
 	if (!reversi->isPass()) {
 		if (reversi->isBW()) { cout << "Now: ¡³" << endl; }
-		else { cout << "Now: ¡´" << endl; }
+		else { 
+			cout << "Now: ¡´" << endl; 
+			if (reversi->isPassed&&reversi->isPass()) {
+				if (countBlack > countWhite) {
+					cout << "Black wins!" << endl;
+				}
+				else if (countBlack == countWhite) {
+					cout << "Draw!" << endl;
+				}
+				else {
+					cout << "White wins!" << endl;
+				}
+			}
+		}
 	}
-	else { reversi->bBW = !reversi->bBW; }
+	if(countOK==0){ reversi->bBW = !reversi->bBW; }
+	cout << "Steps : " << reversi->curRecord << endl;
+	//cout << "Target : " << reversi->mBoard[cursor[1]][cursor[0]] << endl;
 	cout << "¡³ : " << countBlack << "¡´ : " << countWhite << endl;
+	cout << "Move : Arrow Key" << endl;
+	cout << "Select : Enter" << endl;
+	cout << "Undo : BackSpace" << endl;
+	cout << "Redo : Tab" << endl;
 }
 void KeyDownEvent( WPARAM wParam )
 {
 	//==== Tab¡BEnter¡BCtrl... ====//
 	if( wParam == VK_TAB ){
 		cout << "Tab Down" << endl;
+		reversi->Redo();
 	}
 	else if (wParam == VK_BACK){
 		cout << "Back Down" << endl;
+		reversi->Undo();
 	}
 	else if (wParam == VK_RETURN){
 		if (reversi->moveAnalyze(cursor[0], cursor[1])) {
@@ -194,6 +217,7 @@ LRESULT CALLBACK WindowProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam 
 
 	case WM_KEYUP:
 		KeyUpEvent( wParam );
+		DrawBoard();
 		break;
 	}
 
