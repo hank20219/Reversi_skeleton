@@ -18,6 +18,7 @@ void Reversi::init(void){
 			stepRecord[0][j][i] = mBoard[j][i];
 		}
 		mArry[i] = eEMPTY;
+		directions[i] = 0;
 	}
 	mBoard[3][3] = eBLACK;
 	mBoard[4][4] = eBLACK;
@@ -45,19 +46,47 @@ bool Reversi::isEnd(void){
 
 bool Reversi::isPass(){
 	bool bPass = true;
-	for (int i = 0; i < 8; i++){
-		for (int j = 0; j < 8; j++){
-			if(mBoard[j][i]==eEMPTY){
-				chkBoard[j][i] = 0;
-				if (moveAnalyze(j, i)){
+	for (int i = 0; i < 8; i++) {
+		directions[i] = 0;
+		for (int j = 0; j < 8; j++) {
+			chkBoard[j][i] = 0;
+			if (mBoard[j][i] == eEMPTY) {
+				if (North(i, j)) {
 					bPass = false;
-					isPassed = false;
+					chkBoard[j][i] = 1;
+				}
+				if (NorthEast(i, j)) {
+					bPass = false;
+					chkBoard[j][i] = 1;
+				}
+				if (East(i, j)) {
+					bPass = false;
+					chkBoard[j][i] = 1;
+				}
+				if (SouthEast(i, j)) {
+					bPass = false;
+					chkBoard[j][i] = 1;
+				}
+				if (South(i, j)) {
+					bPass = false;
+					chkBoard[j][i] = 1;
+				}
+				if (SouthWest(i, j)) {
+					bPass = false;
+					chkBoard[j][i] = 1;
+				}
+				if (West(i, j)) {
+					bPass = false;
+					chkBoard[j][i] = 1;
+				}
+				if (NorthWest(i, j)) {
+					bPass = false;
 					chkBoard[j][i] = 1;
 				}
 			}
+			
 		}
 	}
-	isPassed = true;
 	return bPass;
 }
 
@@ -204,84 +233,36 @@ bool Reversi::moveAnalyze(int x, int y){
 	//Check 8 directions if the set can be set on the coordinate
 	//If bMode == false, enter flipping mode;
 	//North
-	if (mBoard[y-1][x] == iEnemy){
-			int i = 1;
-			while (mBoard[y-i][x] == iEnemy && y - i >= 0){
-				i++;
-			}
-			if (i > 1 && mBoard[y - i][x] == myColor){
-				result = true; 
-			}
+	if (North(x, y)) {
+		result = true;
 	}
 	//North East
-	if (mBoard[y - 1][x + 1] == iEnemy){
-			int i = 1;
-			while (mBoard[y - i][x + i] == iEnemy && y - i >= 0 && x + i <= 7){
-				i++;
-			}
-			if (i > 1 && mBoard[y - i][x + i] == myColor){
-				result = true; 
-			}
+	if (NorthEast(x, y)) {
+		result = true;
 	}
 	//East
-	if (mBoard[y][x + 1] == iEnemy){
-			int i = 1;
-			while (mBoard[y][x + i] == iEnemy && x + i <= 7){
-				i++;
-			}
-			if (i > 1 && mBoard[y][x + i] == myColor){
-				result = true;
-			}
+	if (East(x, y)) {
+		result = true;
 	}
 	//South East
-	if (mBoard[y + 1][x + 1] == iEnemy){
-			int i = 1;
-			while (mBoard[y + i][x + i] == iEnemy && y + i <= 7 && x + i <= 7){
-				i++;
-			}
-			if (i > 1 && mBoard[y + i][x + i] == myColor){
-				result = true; 
-			}
+	if (SouthEast(x, y)) {
+		result = true;
 	}
 	//South
-	if (mBoard[y + 1][x] == iEnemy){
-			int i = 1;
-			while (mBoard[y + i][x] == iEnemy && y + i <= 7){
-				i++;
-			}
-			if (i > 1 && mBoard[y + i][x] == myColor){
-				result = true; 
-			}
+	if (South(x, y)) {
+		result = true;
 	}
 	//South West
-	if (mBoard[y + 1][x - 1] == iEnemy){
-			int i = 1;
-			while (mBoard[y + i][x - i] == iEnemy && y + i <= 7 && x - i >= 0){
-				i++;
-			}
-			if (i > 1 && mBoard[y + i][x - i] == myColor){
-				result = true; 
-			}
+	if (SouthWest(x, y)) {
+		result = true;
 	}
 	//West
-	if (mBoard[y][x - 1] == iEnemy){
-			int i = 1;
-			while (mBoard[y][x - i] == iEnemy && x - i >= 0){
-				i++;
-			}
-			if (i > 1 && mBoard[y][x - i] == myColor){
-				result = true; 
-			}
+	if (West(x, y)) {
+		result = true;
 	}
 	//North West
-	if (mBoard[y - 1][x - 1] == iEnemy){
-			int i = 1;
-			while (mBoard[y - i][x - i] == iEnemy && y - i >= 0 && x - i >= 0){
-				i++;
-			}
-			if (i > 1 && mBoard[y - i][x - i] == myColor){
-				result = true; 
-			}
+	if (NorthWest(x, y)) {
+		result = true;
 	}
 	
 	return result;
@@ -321,5 +302,198 @@ void Reversi::Redo(void)
 			bBW = true;
 		}
 		curRecord++;
+	}
+}
+
+bool Reversi::North(int x, int y) {
+	int MyColor = eEMPTY, iEnemy = eEMPTY;
+	if (bBW) {
+		MyColor = eBLACK; 
+		iEnemy = eWHITE;
+	}
+	else {
+		MyColor = eWHITE;
+		iEnemy = eBLACK;
+	}
+	int i = 0;
+	if (mBoard[y - 1][x] == iEnemy) {
+		i++;
+	}
+	while (mBoard[y - i][x] == iEnemy && y - i > 0) {
+		i++;
+	}
+	if (mBoard[y - i][x] == MyColor && i > 0) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+bool Reversi::NorthEast(int x, int y) {
+	int MyColor = eEMPTY, iEnemy = eEMPTY;
+	if (bBW) {
+		MyColor = eBLACK;
+		iEnemy = eWHITE;
+	}
+	else {
+		MyColor = eWHITE;
+		iEnemy = eBLACK;
+	}
+	int i = 0;
+	if (mBoard[y - 1][x + 1] == iEnemy) {
+		i++;
+	}
+	while (mBoard[y - i][x + i] == iEnemy && y - i > 0 && x + i < 7) {
+		i++;
+	}
+	if (mBoard[y - i][x + i] == MyColor && i > 0) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+bool Reversi::East(int x, int y) {
+	int MyColor = eEMPTY, iEnemy = eEMPTY;
+	if (bBW) {
+		MyColor = eBLACK;
+		iEnemy = eWHITE;
+	}
+	else {
+		MyColor = eWHITE;
+		iEnemy = eBLACK;
+	}
+	int i = 0;
+	if (mBoard[y][x + 1] == iEnemy) {
+		i++;
+	}
+	while (mBoard[y][x + i] == iEnemy && x + i < 7) {
+		i++;
+	}
+	if (mBoard[y][x + i] == MyColor && i > 0) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+bool Reversi::SouthEast(int x, int y) {
+	int MyColor = eEMPTY, iEnemy = eEMPTY;
+	if (bBW) {
+		MyColor = eBLACK;
+		iEnemy = eWHITE;
+	}
+	else {
+		MyColor = eWHITE;
+		iEnemy = eBLACK;
+	}
+	int i = 0;
+	if (mBoard[y + 1][x + 1] == iEnemy) {
+		i++;
+	}
+	while (mBoard[y + i][x + i] == iEnemy && y + i < 7 && x + i < 7) {
+		i++;
+	}
+	if (mBoard[y + i][x + i] == MyColor && i > 0) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+bool Reversi::South(int x, int y) {
+	int MyColor = eEMPTY, iEnemy = eEMPTY;
+	if (bBW) {
+		MyColor = eBLACK;
+		iEnemy = eWHITE;
+	}
+	else {
+		MyColor = eWHITE;
+		iEnemy = eBLACK;
+	}
+	int i = 0;
+	if (mBoard[y + 1][x] == iEnemy) {
+		i++;
+	}
+	while (mBoard[y + i][x] == iEnemy && y + i < 7) {
+		i++;
+	}
+	if (mBoard[y + i][x] == MyColor && i > 0) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+bool Reversi::SouthWest(int x, int y) {
+	int MyColor = eEMPTY, iEnemy = eEMPTY;
+	if (bBW) {
+		MyColor = eBLACK;
+		iEnemy = eWHITE;
+	}
+	else {
+		MyColor = eWHITE;
+		iEnemy = eBLACK;
+	}
+	int i = 0;
+	if (mBoard[y + 1][x - 1] == iEnemy) {
+		i++;
+	}
+	while (mBoard[y + i][x - i] == iEnemy && y + i < 7 && x - i > 0) {
+		i++;
+	}
+	if (mBoard[y + i][x - i] == MyColor && i > 0) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+bool Reversi::West(int x, int y) {
+	int MyColor = eEMPTY, iEnemy = eEMPTY;
+	if (bBW) {
+		MyColor = eBLACK;
+		iEnemy = eWHITE;
+	}
+	else {
+		MyColor = eWHITE;
+		iEnemy = eBLACK;
+	}
+	int i = 0;
+	if (mBoard[y][x - 1] == iEnemy) {
+		i++;
+	}
+	while (mBoard[y][x - i] == iEnemy && x - i > 0) {
+		i++;
+	}
+	if (mBoard[y][x - i] == MyColor && i > 0) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+bool Reversi::NorthWest(int x, int y) {
+	int MyColor = eEMPTY, iEnemy = eEMPTY;
+	if (bBW) {
+		MyColor = eBLACK;
+		iEnemy = eWHITE;
+	}
+	else {
+		MyColor = eWHITE;
+		iEnemy = eBLACK;
+	}
+	int i = 0;
+	if (mBoard[y - 1][x - 1] == iEnemy) {
+		i++;
+	}
+	while (mBoard[y - i][x - i] == iEnemy && x - i > 0 && y - i >0) {
+		i++;
+	}
+	if (mBoard[y - i][x - i] == MyColor && i > 0) {
+		return true;
+	}
+	else {
+		return false;
 	}
 }

@@ -38,7 +38,17 @@ class Reversi{
 		int chkBoard[8][8];
 		void Undo(void);
 		void Redo(void);
-		
+
+		bool North(int x, int y);
+		bool NorthEast(int x, int y);
+		bool East(int x, int y);
+		bool SouthEast(int x, int y);
+		bool South(int x, int y);
+		bool SouthWest(int x, int y);
+		bool West(int x, int y);
+		bool NorthWest(int x, int y);
+
+		int directions[8];
 		////Function usage(in order):
 		//1.Game start: init()
 		//2.Check whose turn(Black first): isBW()

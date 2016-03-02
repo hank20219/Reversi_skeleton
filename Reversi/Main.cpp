@@ -54,7 +54,7 @@ void DrawBoard() {
 					break;
 				default:
 					if (reversi->chkBoard[j][i] == 1) {
-						drawnBoard += "¡D";
+						drawnBoard += /*"¡D"*/"¡X";
 						countOK++;
 					}else{ 
 						drawnBoard += "¡X"; 
@@ -68,23 +68,25 @@ void DrawBoard() {
 	}
 	cout << drawnBoard << endl;
 	if (!reversi->isPass()) {
-		if (reversi->isBW()) { cout << "Now: ¡³" << endl; }
+		reversi->isPassed = false;
+		if (reversi->bBW) { cout << "Now: ¡³" << endl; }
 		else { 
 			cout << "Now: ¡´" << endl; 
-			if (reversi->isPassed&&reversi->isPass()) {
-				if (countBlack > countWhite) {
-					cout << "Black wins!" << endl;
-				}
-				else if (countBlack == countWhite) {
-					cout << "Draw!" << endl;
-				}
-				else {
-					cout << "White wins!" << endl;
-				}
-			}
 		}
 	}
-	else{ reversi->bBW = !reversi->bBW; }
+	else{ 
+		if (reversi->isPassed) {
+			if (countBlack > countWhite) {
+				cout << "Black wins!!" << endl;
+			}else if (countBlack < countWhite) {
+				cout << "White wins!!" << endl;
+			}else if (countBlack == countWhite) {
+				cout << "It's a draw" << endl;
+			}
+		}
+		reversi->bBW = !reversi->bBW;
+		reversi->isPassed = true;
+	}
 	cout << "Steps : " << reversi->curRecord << endl;
 	//cout << "Target : " << reversi->mBoard[cursor[1]][cursor[0]] << endl;
 	cout << "¡³ : " << countBlack << "¡´ : " << countWhite << endl;
@@ -106,10 +108,40 @@ void KeyDownEvent( WPARAM wParam )
 	}
 	else if (wParam == VK_RETURN){
 		if (reversi->moveAnalyze(cursor[0], cursor[1])) {
+			if (reversi->mBoard[cursor[1]][cursor[0]] == 0) {
 				reversi->setBW(cursor[0], cursor[1]);
 				reversi->bBW = !reversi->bBW;
+			}
 		}
 		cout << "Enter Down" << endl;
+	}
+	else if (wParam == VK_CONTROL) {
+		if (reversi->mBoard[cursor[1]][cursor[0]] == 0) {
+			if (reversi->North(cursor[0], cursor[1])) {
+				cout << "North!" << endl;
+			}
+			if (reversi->NorthEast(cursor[0], cursor[1])) {
+				cout << "NorthEast!" << endl;
+			}
+			if (reversi->East(cursor[0], cursor[1])) {
+				cout << "East" << endl;
+			}
+			if (reversi->SouthEast(cursor[0], cursor[1])) {
+				cout << "SouthEast" << endl;
+			}
+			if (reversi->South(cursor[0], cursor[1])) {
+				cout << "South" << endl;
+			}
+			if (reversi->SouthWest(cursor[0], cursor[1])) {
+				cout << "SouthWest" << endl;
+			}
+			if (reversi->West(cursor[0], cursor[1])) {
+				cout << "West" << endl;
+			}
+			if (reversi->NorthWest(cursor[0], cursor[1])) {
+				cout << "NorthWest" << endl;
+			}
+		}
 	}
 	//==== Moving cursor ====//
 	else if (wParam == '%') //left arrow
