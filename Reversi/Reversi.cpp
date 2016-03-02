@@ -64,15 +64,18 @@ bool Reversi::isPass(){
 void Reversi::setBW(int x, int y){
 	int iEnemy = eEMPTY; //Enemy's color
 	int myColor = eEMPTY; //My color
-	if (bBW){ 
+	if (bBW && mBoard[y][x] == eEMPTY){
 		mBoard[y][x] = eBLACK;
 		iEnemy = eWHITE;
 		myColor = eBLACK;
 	}
-	else { 
+	else if(!bBW && mBoard[y][x] == eEMPTY) {
 		mBoard[y][x] = eWHITE; 
 		iEnemy = eBLACK; 
 		myColor = eWHITE;
+	}
+	else {
+		return;
 	}
 	//North
 	if (mBoard[y - 1][x] == iEnemy) {

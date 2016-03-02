@@ -84,7 +84,7 @@ void DrawBoard() {
 			}
 		}
 	}
-	if(countOK==0){ reversi->bBW = !reversi->bBW; }
+	else{ reversi->bBW = !reversi->bBW; }
 	cout << "Steps : " << reversi->curRecord << endl;
 	//cout << "Target : " << reversi->mBoard[cursor[1]][cursor[0]] << endl;
 	cout << "¡³ : " << countBlack << "¡´ : " << countWhite << endl;
