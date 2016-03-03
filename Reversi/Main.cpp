@@ -35,11 +35,16 @@ void DrawBoard() {
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			if (cursor[0] == j && cursor[1] == i) {
-				drawnBoard += "㊣";
+				
 				if (reversi->getBW(j, i) == 2) {
+					drawnBoard += "★";
 					countWhite++;
 				}else if (reversi->getBW(j, i) == 1) {
+					drawnBoard += "☆";
 					countBlack++;
+				}
+				else if (reversi->getBW(j, i) == 0) {
+					drawnBoard += "㊣";
 				}
 			}
 			else {
@@ -99,11 +104,11 @@ void KeyDownEvent( WPARAM wParam )
 {
 	//==== Tab、Enter、Ctrl... ====//
 	if( wParam == VK_TAB ){
-		cout << "Tab Down" << endl;
+		//cout << "Tab Down" << endl;
 		reversi->Redo();
 	}
 	else if (wParam == VK_BACK){
-		cout << "Back Down" << endl;
+		//cout << "Back Down" << endl;
 		reversi->Undo();
 	}
 	else if (wParam == VK_RETURN){
@@ -113,15 +118,15 @@ void KeyDownEvent( WPARAM wParam )
 				reversi->bBW = !reversi->bBW;
 			}
 		}
-		cout << "Enter Down" << endl;
+		//cout << "Enter Down" << endl;
 	}
 	else if (wParam == VK_CONTROL) {
 		if (reversi->mBoard[cursor[1]][cursor[0]] == 0) {
 			if (reversi->North(cursor[0], cursor[1])) {
-				cout << "North!" << endl;
+				cout << "North" << endl;
 			}
 			if (reversi->NorthEast(cursor[0], cursor[1])) {
-				cout << "NorthEast!" << endl;
+				cout << "NorthEast" << endl;
 			}
 			if (reversi->East(cursor[0], cursor[1])) {
 				cout << "East" << endl;
@@ -166,7 +171,7 @@ void KeyDownEvent( WPARAM wParam )
 	}
 	//==== 英文字母或數字 ====//
 	else{
-		cout << (char)wParam << " Down" << endl;
+		//cout << (char)wParam << " Down" << endl;
 	}
 }
 
